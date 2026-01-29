@@ -22,23 +22,30 @@
             position: relative;
         }
         
-        /* ОБЩИЙ ФОН для всех страниц (всегда активен) */
-        body::before {
+        /* Главный фон для всех остальных разделов (кроме приглашения) */
+        body::after {
             content: '';
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+            background-image: url('./img/fon_2.jpg');
             background-size: cover;
             background-attachment: fixed;
             background-position: center;
             z-index: -2;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        
+        /* Активируем общий фон после первой секции */
+        body.has-common-bg::after {
+            opacity: 1;
         }
         
         /* Вуаль поверх общего фона */
-        body::after {
+        body::before {
             content: '';
             position: fixed;
             top: 0;
@@ -56,13 +63,11 @@
             flex-direction: column;
             justify-content: center;
             scroll-margin-top: 60px;
-            position: relative;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            position: relative;
         }
         
         h1, h2, h3 {
@@ -138,34 +143,18 @@
             left: 0;
         }
         
-        /* ПЕРВАЯ СТРАНИЦА - ПРИГЛАШЕНИЕ (ОТДЕЛЬНЫЙ ФОН ТОЛЬКО ДЛЯ ЭТОЙ СЕКЦИИ) */
+        /* ПЕРВАЯ СТРАНИЦА - ПРИГЛАШЕНИЕ (ОТДЕЛЬНЫЙ ФОН) */
         #invitation {
             background: linear-gradient(rgba(255, 248, 240, 0.9), rgba(255, 248, 240, 0.9)), 
-                        url('https://images.unsplash.com/photo-1511988617509-a57c8a288659?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
+                        url('./img/fon.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             color: #333;
             text-align: center;
-            padding-top: 100px;
             position: relative;
-            z-index: 1;
-        }
-        
-        /* Создаем отдельный фон для первой секции, который перекрывает общий */
-        #invitation::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(255, 248, 240, 0.9), rgba(255, 248, 240, 0.9)), 
-                        url('https://images.unsplash.com/photo-1511988617509-a57c8a288659?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            z-index: -1;
+            padding-top: 100px;
+            z-index: 2;
         }
         
         .invitation-content {
@@ -256,21 +245,13 @@
             color: #666;
         }
         
-        /* ОСТАЛЬНЫЕ СТРАНИЦЫ - ИСПОЛЬЗУЮТ ОБЩИЙ ФОН */
+        /* ОСТАЛЬНЫЕ СТРАНИЦЫ - ОБЩИЙ ФОН */
         #greeting,
         #dresscode,
         #survey,
         #schedule {
             position: relative;
             z-index: 1;
-        }
-        
-        /* Убираем фон у остальных секций */
-        #greeting::before,
-        #dresscode::before,
-        #survey::before,
-        #schedule::before {
-            display: none;
         }
         
         .greeting-content {
@@ -294,7 +275,7 @@
             backdrop-filter: blur(3px);
         }
         
-        /* Фотографии - 1 общая + 2 отдельных */
+        /* НОВЫЙ СТИЛЬ ДЛЯ ФОТОГРАФИЙ - 1 общая + 2 отдельных */
         .photo-container {
             flex: 1;
             min-width: 300px;
@@ -736,19 +717,18 @@
                     <p>Ваше присутствие наполнит наш праздник теплотой и радостью. Мы с нетерпением ждем встречи с вами, чтобы вместе отпраздновать начало нашей семьи.</p>
                     <p>С любовью, Вадим и Виктория</p>
                 </div>
-
                 <div class="photo-container">
                     <p style="text-align: center; font-size: 28px;">Молодожены</p>
                     <div class="main-photo">
-                        <img src="./img1.jpg" alt="Вадим и Виктория вместе">
+                        <img src="./img/img1.jpg" alt="Вадим и Виктория вместе">
                     </div>
                     <div class="individual-photos">
                         <div class="individual-photo">
-                            <img src="./img2.jpg" alt="Вадим">
+                            <img src="./img/img2.jpg" alt="Вадим">
                             <div class="photo-label">Жених</div>
                         </div>
                         <div class="individual-photo">
-                            <img src="./img3.jpg" alt="Виктория">
+                            <img src="./img/img3.jpg" alt="Виктория">
                             <div class="photo-label">Невеста</div>
                         </div>
                     </div>
@@ -904,6 +884,22 @@
             // Обновляем таймер каждую секунду
             setInterval(updateCountdown, 1000);
             updateCountdown();
+            
+            // Управление фонами
+            function checkBackground() {
+                const scrollPosition = window.scrollY;
+                const invitationHeight = document.getElementById('invitation').offsetHeight;
+                
+                // Если прокрутили ниже первой секции, включаем общий фон
+                if (scrollPosition > invitationHeight / 2) {
+                    document.body.classList.add('has-common-bg');
+                } else {
+                    document.body.classList.remove('has-common-bg');
+                }
+            }
+            
+            window.addEventListener('scroll', checkBackground);
+            checkBackground(); // Проверяем при загрузке
             
             // Активная навигация при прокрутке
             const sections = document.querySelectorAll('.section');
