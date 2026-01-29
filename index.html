@@ -19,6 +19,41 @@
             color: #333;
             line-height: 1.6;
             background-color: #f9f5f0;
+            position: relative;
+        }
+        
+        /* Главный фон для всех остальных разделов (кроме приглашения) */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('./fon_2.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            z-index: -2;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        
+        /* Активируем общий фон после первой секции */
+        body.has-common-bg::after {
+            opacity: 1;
+        }
+        
+        /* Вуаль поверх общего фона */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 248, 240, 0.85);
+            z-index: -1;
         }
         
         .section {
@@ -71,7 +106,7 @@
             right: 0;
             background-color: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            z-index: 1000;
+            z-index: 1001;
             padding: 15px 20px;
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
             display: flex;
@@ -108,16 +143,18 @@
             left: 0;
         }
         
-        /* Первая страница - Приглашение (светлая версия) */
+        /* ПЕРВАЯ СТРАНИЦА - ПРИГЛАШЕНИЕ (ОТДЕЛЬНЫЙ ФОН) */
         #invitation {
-            background: linear-gradient(rgba(255, 248, 240, 0.9), rgba(255, 248, 240, 0.9)), url('./fon.jpg');
+            background: linear-gradient(rgba(255, 248, 240, 0.9), rgba(255, 248, 240, 0.9)), 
+                        url('./fon.jpg');
             background-size: cover;
             background-position: center;
-           /* background-attachment: fixed; */
+            background-attachment: fixed;
             color: #333;
             text-align: center;
             position: relative;
             padding-top: 100px;
+            z-index: 2;
         }
         
         .invitation-content {
@@ -128,6 +165,8 @@
             border-radius: 15px;
             backdrop-filter: blur(5px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 2;
         }
         
         .couple-names {
@@ -206,9 +245,13 @@
             color: #666;
         }
         
-        /* Вторая страница - Приветствие */
-        #greeting {
-            background-color: #f9f5f0;
+        /* ОСТАЛЬНЫЕ СТРАНИЦЫ - ОБЩИЙ ФОН */
+        #greeting,
+        #dresscode,
+        #survey,
+        #schedule {
+            position: relative;
+            z-index: 1;
         }
         
         .greeting-content {
@@ -226,45 +269,84 @@
             line-height: 1.8;
             text-align: justify;
             padding: 20px;
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(3px);
         }
         
-        .photo-gallery {
+        /* НОВЫЙ СТИЛЬ ДЛЯ ФОТОГРАФИЙ - 1 общая + 2 отдельных */
+        .photo-container {
             flex: 1;
             min-width: 300px;
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            grid-template-columns: 1fr;
+            gap: 20px;
         }
         
-        .photo-item {
-            border-radius: 10px;
+        .main-photo {
+            width: 100%;
+            height: 300px;
+            border-radius: 15px;
             overflow: hidden;
-            height: 200px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         }
         
-        .photo-item img {
+        .main-photo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.5s ease;
         }
         
-        .photo-item:hover img {
+        .individual-photos {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .individual-photo {
+            height: 180px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .individual-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .photo-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .main-photo:hover img,
+        .individual-photo:hover img {
             transform: scale(1.05);
         }
         
         /* Третья страница - Дресс-код */
-        #dresscode {
-            background-color: #fff;
-        }
-        
         .dresscode-content {
             max-width: 800px;
             margin: 40px auto 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(3px);
         }
         
         .dresscode-description {
@@ -274,44 +356,53 @@
             color: #555;
         }
         
+        /* КРУГЛЫЕ ЦВЕТА ДЛЯ ДРЕСС-КОДА */
         .color-palette {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 15px;
+            gap: 30px;
             margin-top: 30px;
         }
         
         .color-item {
-            width: 200px;
-            height: 100px;
-            border-radius: 10px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: 500;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
         
         .color-item:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
         }
         
-        /* Четвертая страница - Опрос (Google Forms) */
-        #survey {
-            background-color: #f9f5f0;
+        .color-name {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
+        /* Четвертая страница - Опрос */
         .survey-form {
             max-width: 800px;
             margin: 40px auto 0;
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 40px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(3px);
         }
         
         .google-forms-note {
@@ -339,7 +430,7 @@
         .forms-instruction {
             margin-top: 30px;
             padding: 20px;
-            background-color: #f8f9fa;
+            background-color: rgba(248, 249, 250, 0.9);
             border-radius: 10px;
             border-left: 4px solid #b8860b;
         }
@@ -360,14 +451,15 @@
         }
         
         /* Пятая страница - Расписание */
-        #schedule {
-            background-color: #fff;
-        }
-        
         .timeline {
             max-width: 800px;
             margin: 40px auto 0;
             position: relative;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(3px);
         }
         
         .timeline:before {
@@ -425,9 +517,12 @@
         .footer {
             text-align: center;
             padding: 30px;
-            background-color: #333;
+            background-color: rgba(51, 51, 51, 0.95);
             color: white;
             font-size: 1rem;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(5px);
         }
         
         .footer-heart {
@@ -519,17 +614,47 @@
             .google-forms-frame {
                 height: 1400px;
             }
+            
+            /* Адаптивность для фотографий */
+            .greeting-content {
+                flex-direction: column;
+            }
+            
+            .main-photo {
+                height: 250px;
+            }
+            
+            .individual-photo {
+                height: 150px;
+            }
+            
+            /* Адаптивность для круглых цветов */
+            .color-item {
+                width: 100px;
+                height: 100px;
+            }
         }
         
         @media (max-width: 480px) {
             .color-item {
-                width: 150px;
+                width: 80px;
                 height: 80px;
-                font-size: 0.9rem;
+            }
+            
+            .color-name {
+                font-size: 0.7rem;
             }
             
             .google-forms-frame {
                 height: 1600px;
+            }
+            
+            .main-photo {
+                height: 200px;
+            }
+            
+            .individual-photo {
+                height: 120px;
             }
         }
     </style>
@@ -544,7 +669,7 @@
         <a href="#schedule" class="nav-link">Расписание</a>
     </nav>
 
-    <!-- Первая страница - Приглашение -->
+    <!-- Первая страница - Приглашение (ОТДЕЛЬНЫЙ ФОН) -->
     <section id="invitation" class="section">
         <div class="container">
             <div class="invitation-content">
@@ -581,7 +706,7 @@
         </div>
     </section>
 
-    <!-- Вторая страница - Приветствие -->
+    <!-- Вторая страница - Приветствие (ОБЩИЙ ФОН) -->
     <section id="greeting" class="section">
         <div class="container">
             <h2>Дорогие гости!</h2>
@@ -592,25 +717,26 @@
                     <p>Ваше присутствие наполнит наш праздник теплотой и радостью. Мы с нетерпением ждем встречи с вами, чтобы вместе отпраздновать начало нашей семьи.</p>
                     <p>С любовью, Вадим и Виктория</p>
                 </div>
-                <div class="photo-gallery">
-                    <div class="photo-item">
-                        <img src="https://images.unsplash.com/photo-1511988617509-a57c8a288659?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Фото пары 1">
+                <div class="photo-container">
+                    <div class="main-photo">
+                        <img src="https://images.unsplash.com/photo-1511988617509-a57c8a288659?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Вадим и Виктория вместе">
                     </div>
-                    <div class="photo-item">
-                        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Фото пары 2">
-                    </div>
-                    <div class="photo-item">
-                        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Фото пары 3">
-                    </div>
-                    <div class="photo-item">
-                        <img src="https://images.unsplash.com/photo-1529254479751-fbacb4c8a346?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Фото пары 4">
+                    <div class="individual-photos">
+                        <div class="individual-photo">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Вадим">
+                            <div class="photo-label">Вадим</div>
+                        </div>
+                        <div class="individual-photo">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Виктория">
+                            <div class="photo-label">Виктория</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Третья страница - Дресс-код -->
+    <!-- Третья страница - Дресс-код (ОБЩИЙ ФОН) -->
     <section id="dresscode" class="section">
         <div class="container">
             <h2>Дресс-код</h2>
@@ -619,18 +745,30 @@
                     Мы будем очень рады, если вы поддержите цветовую палитру нашей свадьбы в своих нарядах.
                 </p>
                 <div class="color-palette">
-                    <div class="color-item" style="background-color: #000000;"></div>
-                    <div class="color-item" style="background-color: #5C4733; color: white;"></div>
-                    <div class="color-item" style="background-color: #846A56; color: white;"></div>
-                    <div class="color-item" style="background-color: #E0D3C5;"></div>
-                    <div class="color-item" style="background-color: #F8BBD0;"></div>
-                    <div class="color-item" style="background-color: #ADBDA3; color: white;"></div>
+                    <div class="color-item" style="background-color: #000000; color: white;">
+                        <div class="color-name"></div>
+                    </div>
+                    <div class="color-item" style="background-color: #5C4733; color: white;">
+                        <div class="color-name"></div>
+                    </div>
+                    <div class="color-item" style="background-color: #846A56; color: white;">
+                        <div class="color-name"></div>
+                    </div>
+                    <div class="color-item" style="background-color: #E0D3C5;">
+                        <div class="color-name"></div>
+                    </div>
+                    <div class="color-item" style="background-color: #F8BBD0;">
+                        <div class="color-name"></div>
+                    </div>
+                    <div class="color-item" style="background-color: #ADBDA3; color: white;">
+                        <div class="color-name"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Четвертая страница - Опрос гостей (Google Forms) -->
+    <!-- Четвертая страница - Опрос гостей (ОБЩИЙ ФОН) -->
     <section id="survey" class="section">
         <div class="container">
             <h2>Опрос для гостей</h2>
@@ -640,7 +778,6 @@
                 </div>
                 
                 <div class="google-forms-container">
-                    <!-- ВАЖНО: Замените ссылку ниже на вашу Google Forms ссылку -->
                     <iframe 
                         class="google-forms-frame"
                         src="https://docs.google.com/forms/d/e/1FAIpQLScVe5dDAiUs4PfTH_MIcDmydqVMlaYfU2n51cVBqp_cdBOcpw/viewform?usp=header" 
@@ -650,15 +787,7 @@
                         Загрузка формы...
                     </iframe>
                 </div>
-<!--                 <div class="forms-instruction">
-                    <h4>Как создать свою Google Form:</h4>
-                    <ul>
-                        <li>Зайдите на <a href="https://forms.google.com" target="_blank">forms.google.com</a></li>
-                        <li>Создайте новую форму с вашими вопросами</li>
-                        <li>В настройках формы нажмите "Отправить" → значок &lt;/&gt; (Встраивание)</li>
-                        <li>Скопируйте код iframe и замените его в коде выше</li>
-                        <li>Все ответы будут сохраняться в Google Sheets автоматически</li>
-                    </ul> -->
+                <div class="forms-instruction">
                     <p style="margin-top: 15px; font-style: italic; color: #666;">
                         После отправки формы вы увидите сообщение об успешной отправке.
                     </p>
@@ -667,7 +796,7 @@
         </div>
     </section>
 
-    <!-- Пятая страница - Расписание -->
+    <!-- Пятая страница - Расписание (ОБЩИЙ ФОН) -->
     <section id="schedule" class="section">
         <div class="container">
             <h2>Свадебное расписание</h2>
@@ -755,6 +884,22 @@
             setInterval(updateCountdown, 1000);
             updateCountdown();
             
+            // Управление фонами
+            function checkBackground() {
+                const scrollPosition = window.scrollY;
+                const invitationHeight = document.getElementById('invitation').offsetHeight;
+                
+                // Если прокрутили ниже первой секции, включаем общий фон
+                if (scrollPosition > invitationHeight / 2) {
+                    document.body.classList.add('has-common-bg');
+                } else {
+                    document.body.classList.remove('has-common-bg');
+                }
+            }
+            
+            window.addEventListener('scroll', checkBackground);
+            checkBackground(); // Проверяем при загрузке
+            
             // Активная навигация при прокрутке
             const sections = document.querySelectorAll('.section');
             const navLinks = document.querySelectorAll('.nav-link');
@@ -820,12 +965,6 @@
                 // Обновляем активную ссылку
                 navLinks.forEach(l => l.classList.remove('active'));
                 navLinks[0].classList.add('active');
-            });
-            
-            // Открытие внешних ссылок в новой вкладке
-            document.querySelectorAll('a[href^="http"]').forEach(link => {
-                link.setAttribute('target', '_blank');
-                link.setAttribute('rel', 'noopener noreferrer');
             });
         });
     </script>
